@@ -31,7 +31,8 @@ static void update_curr_other_rr(struct rq *rq)
  */
 static void enqueue_task_other_rr(struct rq *rq, struct task_struct *p, int wakeup, bool b)
 {
-	// not yet implemented
+	list_add_tail(&p->other_rr_run_list, &rq->other_rr.queue);
+	rq->other_rr.nr_running += 1;
 }
 
 static void dequeue_task_other_rr(struct rq *rq, struct task_struct *p, int sleep)
