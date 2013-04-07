@@ -41,6 +41,8 @@ static void dequeue_task_other_rr(struct rq *rq, struct task_struct *p, int slee
 	update_curr_other_rr(rq);
 
 	// not yet implemented
+	list_del(&p->other_rr_run_list);
+	rq->other_rr.nr_running -=1;
 }
 
 /*
