@@ -58,7 +58,7 @@ static void requeue_task_other_rr(struct rq *rq, struct task_struct *p)
 static void
 yield_task_other_rr(struct rq *rq)
 {
-	// not yet implemented
+	requeue_task_other_rr(rq,&rq->other_rr.curr)
 }
 
 /*
