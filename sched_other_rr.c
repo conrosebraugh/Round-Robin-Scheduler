@@ -31,7 +31,7 @@ static void update_curr_other_rr(struct rq *rq)
  */
 static void enqueue_task_other_rr(struct rq *rq, struct task_struct *p, int wakeup, bool b)
 {
-	list_add_tail(&p->other_rr_run_list, &rq->other_rr.queue);
+
 	rq->other_rr.nr_running += 1;
 }
 
@@ -183,7 +183,24 @@ static void task_tick_other_rr(struct rq *rq, struct task_struct *p,int queued)
 	// first update the task's runtime statistics
 	update_curr_other_rr(rq);
 
-	// not yet implemented
+	struct task_struct *curr = rq->curr;
+	// if (default quantum value == zero), current task holds the cpu
+	if(other_rr_time_slice == 0) // in this case, the functionj should immediately return
+	  return;
+
+	// decrement current tasks timeslice by 1	
+	p->task_time_slice = 0;
+
+	if (p->task_time_slice == 0)
+	{
+	  // reset the timeslice value
+	  p->task_time_slice = other_rr_time_slice;
+	  // move it to the end of the run queue
+	  list_del(&p->other_rr_run_list);
+	  list_add_tail(&p->other_rr_run_list, &rq->other_rr.queue);
+	  // set its TIF_NEED_RESCHED flag (using set_tsk_need_resched(task))
+	  set_tsk_need_resched(p);
+	}
 }
 
 /*
