@@ -187,10 +187,13 @@ static void task_tick_other_rr(struct rq *rq, struct task_struct *p,int queued)
 	if(other_rr_time_slice == 0) // in this case, the functionj should immediately return
 	  return;
 
-	// decrement current tasks timeslice by 1	
-	p->task_time_slice = 0;
-
-	if (p->task_time_slice == 0)
+	// decrement current tasks timeslice by 1
+	if(p->task_time_slice > 0)
+	{
+	  p->task_time_slice -= 1;
+	  return;
+	}
+	else
 	{
 	  // reset the timeslice value
 	  p->task_time_slice = other_rr_time_slice;
